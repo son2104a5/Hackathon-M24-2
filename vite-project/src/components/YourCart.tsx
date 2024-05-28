@@ -1,50 +1,63 @@
+import { MouseEventHandler } from 'react';
+import '../App.css';
 
+interface Cart {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+}
 
-export default function YourCart() {
+interface Props {
+  cart: Cart[];
+  handleDelete: MouseEventHandler
+}
+
+export default function YourCart({ cart, handleDelete }: Props) {
+  let total: number = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   return (
-    <div>
-        <tr>
-            <th scope="row">1</th>
-            <td>Cake</td>
-            <td>10 USD</td>
-            <td>
-            <input
-                name="cart-item-quantity-1"
-                type="number"
-                value="15"
-            />
-            </td>
-            <td>
-            <a
-                className="label label-info update-cart-item"
-                data-product=""
-                >Update</a><a
-                className="label label-danger delete-cart-item"
-                data-product=""
-                >Delete</a>
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">2</th>
-            <td>Hamburger</td>
-            <td>15 USD</td>
-            <td>
-            <input
-                name="cart-item-quantity-1"
-                type="number"
-                value="32"
-            />
-            </td>
-            <td>
-            <a
-                className="label label-info update-cart-item"
-                data-product=""
-                >Update</a><a
-                className="label label-danger delete-cart-item"
-                data-product=""
-                >Delete</a>
-            </td>
-        </tr>
+    <div className="panel-body">
+      <table className="table">
+        <thead>
+          <tr>
+            <th className='w-[4%]'>STT</th>
+            <th>Name</th>
+            <th className='w-[15%]'>Price</th>
+            <th className='w-[4%]'>Quantity</th>
+            <th className='w-[25%]'>Action</th>
+          </tr>
+        </thead>
+        <tbody id="my-cart-body">
+          {cart.map((item, index) => (
+            <tr key={item.id}>
+              <th scope="row">{index + 1}</th>
+              <td>{item.name}</td>
+              <td>{item.price} USD</td>
+              <td><input type="number" value={item.quantity}/></td>
+              <td>
+                <a className="label label-info update-cart-item" data-product="">Update</a>
+                <a className="label label-danger delete-cart-item" data-product="" onClick={handleDelete}>Delete</a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+        <tfoot id="my-cart-footer">
+          {cart.length !== 0 ? (
+            <tr>
+              <td colSpan={4}>
+                Có <b>{cart.length}</b> sản phẩm trong giỏ của bạn.
+              </td>
+              <td colSpan={2} className="total-price text-left">{total} USD</td>
+            </tr>
+          ) : (
+            <tr>
+              <td colSpan={4}>
+                Không có sản phẩm trong giỏ của bạn.
+              </td>
+            </tr>
+          )}
+        </tfoot>
+      </table>
     </div>
-  )
+  );
 }
